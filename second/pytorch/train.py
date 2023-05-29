@@ -360,7 +360,7 @@ def train(config_path,
             print(result, file=logf)
             print(result)
             writer.add_text('eval_result', json.dumps(result, indent=2), global_step)
-            result = get_coco_eval_result(gt_annos, dt_annos, class_names)
+            # result = get_coco_eval_result(gt_annos, dt_annos, class_names)
             print(result, file=logf)
             print(result)
             if pickle_result:
@@ -698,7 +698,7 @@ def evaluate(config_path,
         result = get_official_eval_result(gt_annos, dt_annos, class_names)
         # print(json.dumps(result, indent=2))
         print(result)
-        result = get_coco_eval_result(gt_annos, dt_annos, class_names)
+        # result = get_coco_eval_result(gt_annos, dt_annos, class_names)
         print(result)
         if pickle_result:
             with open(result_path_step / "result.pkl", 'wb') as f:
