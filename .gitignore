@@ -111,3 +111,4 @@ venv.bak/
 # pretrained stuff
 /model_dir/
 /d2_detection_data
+*.pkl
