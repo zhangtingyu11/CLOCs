@@ -24,7 +24,14 @@ from second.utils.progress_bar import ProgressBar
 from second.pytorch.core import box_torch_ops
 from second.pytorch.core.losses import SigmoidFocalClassificationLoss
 from second.pytorch.models import fusion
-
+from numba.core.errors import NumbaDeprecationWarning, NumbaPendingDeprecationWarning,NumbaPerformanceWarning,NumbaWarning
+import warnings
+warnings.simplefilter('ignore', category=NumbaDeprecationWarning)
+warnings.simplefilter('ignore', category=NumbaPendingDeprecationWarning)
+warnings.simplefilter('ignore', category=NumbaPerformanceWarning)
+warnings.simplefilter('ignore', category=NumbaWarning)
+warnings.simplefilter('ignore')
+warnings.filterwarnings('ignore')
 
 def example_convert_to_torch(example, dtype=torch.float32,
                              device=None) -> dict:
@@ -353,7 +360,7 @@ def train(config_path,
             print(result, file=logf)
             print(result)
             writer.add_text('eval_result', json.dumps(result, indent=2), global_step)
-            result = get_coco_eval_result(gt_annos, dt_annos, class_names)
+            # result = get_coco_eval_result(gt_annos, dt_annos, class_names)
             print(result, file=logf)
             print(result)
             if pickle_result:
@@ -691,7 +698,7 @@ def evaluate(config_path,
         result = get_official_eval_result(gt_annos, dt_annos, class_names)
         # print(json.dumps(result, indent=2))
         print(result)
-        result = get_coco_eval_result(gt_annos, dt_annos, class_names)
+        # result = get_coco_eval_result(gt_annos, dt_annos, class_names)
         print(result)
         if pickle_result:
             with open(result_path_step / "result.pkl", 'wb') as f:
@@ -868,7 +875,7 @@ def predict_v2(net,example, preds_dict):
             if net._use_direction_classifier:
                 dir_labels = selected_dir_labels
                 #print("dir_labels shape is:",dir_labels.shape,"the values are: ",dir_labels)
-                opp_labels = (box_preds[..., -1] > 0) ^ dir_labels.byte()
+                opp_labels = (box_preds[..., -1] > 0) ^ dir_labels.to(torch.bool)
                 box_preds[..., -1] += torch.where(
                     opp_labels,
                     torch.tensor(np.pi).type_as(box_preds),
